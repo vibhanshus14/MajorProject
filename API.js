@@ -1,73 +1,40 @@
-const express = require("express");
+const express=require('express')
+require('../dbconfig/dbConnect')
+const artistModel=require('../Model/Model')
+const userModel=require('../Model/userModel')
 const cors=require('cors')
-// const mongoose = require ("mongoose")
-require("../dbconfig/dbconnect"); //establishes connection with db
-const CardModel = require("../model/CardModel"); //establishes connection with productSchema
-const ex = express();
+//cors is used to connect frontend and backend simaltenously
+
+const ex=express();
 
 ex.use(express.json());
 ex.use(cors())
+ex.post('/artistRegister',async(req,resp)=>{
+    const artist=new artistModel(req.body);
+    const result=await artist.save()
+    resp.send(result)
+})
 
-// // Insert new product
-// ex.post("/insertProduct", async (req, res) => {
-//   const product = new ProductModel(req.body);
-//   const result = await product.save();
-//   res.send(result);
-// });
-
-
-// //
-
- ex.post("/createNewPost", async (req, res) => {
-   const product = new CardModel(req.body);
-   const result = await product.save();
-   res.send(result);
- });
+ex.post('/userRegister',async(req,resp)=>{
+    const user=new userModel(req.body);
+    const result=await user.save()
+    resp.send(result)
+})
 
 
-
- ex.get("/showNewPost" ,async (req,resp)=>{
-   const result=await CardModel.find()
-    //console.log(result); to get the result in terminal ie he console
-   resp.send(result)
-   // to get the result in browser ie  http://localhost:4000/getProduc
- })
+ex.get("/artistLogin",async (req,resp)=>{
+    const result=await artistModel.find()
+    console.log(result);
+    resp.send(result);
+})
 
 
-// const multer=require('multer')
-// const CardsModel=require('../model/CardModel')
-// const Storage=multer.diskStorage({
-//     destination:'uploads',
-//     filename:(req,file,cb)=>{
-//         cb(null, file.originalname);
-//     },
-// });
-// const upload= multer({
-//     storage:Storage
-// }).single('testImage')
-// ex.post('/insertCards',async(req,resp)=>{
-//     upload(req,resp,(err)=>{
-//         if(err){console.log(err);}
-    
-//     else{
-//         const newImage=new CardsModel({
-//             testName:req.body.testName,
-//             testDescription:req.body.testDescription,
-//             price:req.body.price,
-//             image:{
-//                 data:req.file.filename,
-//                 contentType:'image/png'
-//             }
-//         })
-//         newImage.save()
-//         .then(()=>resp.send("Successfully uploaded"))
-//         .catch(err=>console.log(err))
-//     }}
-//     )
-
-// })
+ex.get("/userLogin",async (req,resp)=>{
+    const result=await userModel.find()
+    console.log(result);
+    resp.send(result);
+})
 
 
 
-
-ex.listen(4000);
+ex.listen(4000)
